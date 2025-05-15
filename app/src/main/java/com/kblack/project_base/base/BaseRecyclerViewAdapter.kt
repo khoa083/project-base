@@ -1,4 +1,4 @@
 package com.kblack.project_base.base
 
-class BaseRecyclerViewAdapter {
+abstract class BaseRecyclerViewAdapter {
 }

@@ -1,4 +1,4 @@
 package com.kblack.project_base.base
 
-class BaseRepository {
+abstract class BaseRepository {
 }

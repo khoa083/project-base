@@ -1,4 +1,6 @@
 package com.kblack.project_base.base
 
-class BaseViewModel {
+import androidx.lifecycle.ViewModel
+
+abstract class BaseViewModel : ViewModel() {
 }
