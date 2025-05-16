@@ -69,13 +69,13 @@ abstract class BaseListAdapter<T : Any, VB : ViewDataBinding>(
 /**
  * paging adapter
  */
-abstract class BasePagingAdapter<Item : Any, ViewBinding : ViewDataBinding>(
-    callBack: DiffUtil.ItemCallback<Item>
-) : PagingDataAdapter<Item, BaseViewHolder<ViewBinding>>(callBack),
-    BaseRecyclerAdapter<Item, ViewBinding> {
+abstract class BasePagingAdapter<T : Any, VB : ViewDataBinding>(
+    callBack: DiffUtil.ItemCallback<T>
+) : PagingDataAdapter<T, BaseViewHolder<VB>>(callBack),
+    BaseRecyclerAdapter<T, VB> {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewBinding> {
-        return BaseViewHolder(DataBindingUtil.inflate<ViewBinding>(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<VB> {
+        return BaseViewHolder(DataBindingUtil.inflate<VB>(
             LayoutInflater.from(parent.context),
             getLayoutRes(viewType),
             parent, false
@@ -84,9 +84,9 @@ abstract class BasePagingAdapter<Item : Any, ViewBinding : ViewDataBinding>(
         })
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<ViewBinding>, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<VB>, position: Int) {
         // adapter uses getItem() to detect loading
-        val item: Item? = getItem(position)
+        val item: T? = getItem(position)
         holder.binding.setVariable(BR.item, item)
         if (item != null) {
             bindView(holder.binding, item, position)
