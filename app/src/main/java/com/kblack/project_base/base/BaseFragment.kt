@@ -20,7 +20,7 @@ abstract class BaseFragment<VB: ViewDataBinding, VM: BaseViewModel> : Fragment()
      *     FragmentGeneratePassphraseBinding::inflate
      */
 
-    abstract val layoutId: Int //ID View: R.layout.fragment_example
+    abstract val layoutId: Int
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +43,14 @@ abstract class BaseFragment<VB: ViewDataBinding, VM: BaseViewModel> : Fragment()
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun findFragment(tag: String): Fragment? {
+        return activity?.supportFragmentManager?.findFragmentByTag(tag)
+    }
+
+    fun findChildFragment(parentFragment: Fragment = this, tag: String): Fragment? {
+        return parentFragment.childFragmentManager.findFragmentByTag(tag)
     }
 
 }
