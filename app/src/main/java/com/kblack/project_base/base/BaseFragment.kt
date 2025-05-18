@@ -45,11 +45,11 @@ abstract class BaseFragment<VB: ViewDataBinding, VM: BaseViewModel> : Fragment()
         _binding = null
     }
 
-    fun findFragment(tag: String): Fragment? {
+    protected fun findFragment(tag: String): Fragment? {
         return activity?.supportFragmentManager?.findFragmentByTag(tag)
     }
 
-    fun findChildFragment(parentFragment: Fragment = this, tag: String): Fragment? {
+    protected fun findChildFragment(parentFragment: Fragment = this, tag: String): Fragment? {
         return parentFragment.childFragmentManager.findFragmentByTag(tag)
     }
 
