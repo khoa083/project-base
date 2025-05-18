@@ -2,11 +2,16 @@ package com.kblack.project_base.extensions
 
 import android.animation.Animator
 import android.animation.IntEvaluator
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
+import androidx.core.animation.doOnEnd
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 
 fun View.visible() {
@@ -150,6 +155,31 @@ class OnSingleClickListener(
         if (currentTimeMillis - mLastClickTime >= mDelayTime) {
             mLastClickTime = currentTimeMillis
             mListener.invoke(v)
+        }
+    }
+}
+
+private lateinit var viewsToAnimate: Array<ViewGroup>
+
+fun showViewsWithAnimation() {
+    viewsToAnimate.forEach { view ->
+        ObjectAnimator.ofFloat(view, "alpha", 0f, 1f).apply {
+            duration = 500L
+            interpolator = DecelerateInterpolator()
+            view.isVisible = true
+            start()
+        }
+    }
+}
+
+fun hideViewsWithAnimation() {
+    viewsToAnimate.forEach { view ->
+        if (view.isVisible) {
+            ObjectAnimator.ofFloat(view, "alpha", 1f, 0f).apply {
+                duration = 300L
+                interpolator = AccelerateInterpolator()
+                start()
+            }.doOnEnd { view.isVisible = false }
         }
     }
 }
