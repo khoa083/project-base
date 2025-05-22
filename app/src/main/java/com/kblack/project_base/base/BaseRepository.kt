@@ -59,15 +59,12 @@ abstract class BaseRepository(
 
         try {
             val result = withContext(ioDispatcher) {
-                // Kiểm tra cache trước khi gọi mạng
                 cacheKey?.let { key ->
                     cache[key]?.let { cachedData ->
                         return@withContext cachedData as T
                     }
                 }
-                // Thực hiện gọi mạng
                 val data = call()
-                // Lưu vào cache nếu có cacheKey
                 cacheKey?.let { key -> cache[key] = data as Any }
                 data
             }
