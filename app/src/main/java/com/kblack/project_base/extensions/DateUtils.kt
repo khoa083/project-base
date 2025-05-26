@@ -33,50 +33,6 @@ import java.util.*
  * @since 2020/9/8
  */
 object DateUtils {
-
-    /**
-     * 获取时间格式化String
-     * @param timestamp 时间戳
-     * @param dateFormat 日期格式
-     * @return 格式化后的字符串
-     */
-    fun getDateFormatString(timestamp: Long, dateFormat: String): String =
-        SimpleDateFormat(dateFormat, Locale.CHINESE).format(Date(timestamp))
-
-    /**
-     * 将固定格式[dateFormat]的时间字符串[dateString]转换为时间值
-     */
-    fun getDateStringToDate(dateString: String, dateFormat: String): Long? {
-        val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.CHINESE)
-        var date: Date? = null
-        try {
-            date = simpleDateFormat.parse(dateString)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        return date?.time
-    }
-
-    /**
-     * 将计时毫秒值[millisecond]转换为时分秒
-     */
-    fun getGapTime(millisecond: Long): String {
-        val hours = millisecond / (1000 * 60 * 60)
-        val minutes = (millisecond - hours * (1000 * 60 * 60)) / (1000 * 60)
-        val second = (millisecond - hours * (1000 * 60 * 60) - minutes * (1000 * 60)) / 1000
-        var diffTime: String = if (minutes < 10) {
-            "$hours:0$minutes"
-        } else {
-            "$hours:$minutes"
-        }
-        diffTime = if (second < 10) {
-            "$diffTime:0$second"
-        } else {
-            "$diffTime:$second"
-        }
-        return diffTime
-    }
-
     /**
      * 获取以当前日期为基准的某一时间段的日期
      * @param isFuture Boolean 真为未来时间 假为以前的时间
@@ -98,8 +54,8 @@ object DateUtils {
         if (size < 1) throw RuntimeException("\"size\" it can't be less than 1")
         val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.CHINESE)
         val calendar = Calendar.getInstance()
-        val currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
-        val currentYear = calendar.get(Calendar.YEAR)
+        val currentDayOfYear = calendar[Calendar.DAY_OF_YEAR]
+        val currentYear = calendar[Calendar.YEAR]
         val dateList = mutableListOf<String>()
         if (isFuture) {
             (interval until interval + size).forEach {
@@ -156,22 +112,6 @@ object DateUtils {
     }
 
     /**
-     * String 转化Date
-     * @param str String
-     * @param format String
-     * @return Date
-     */
-    fun strToDate(str: String, format: String): Date? {
-        val sdf = SimpleDateFormat(format, Locale.CHINESE)
-        return try {
-            sdf.parse(str)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    /**
      * 判断两个时间是否是同一天
      * @param cal1 Calendar
      * @param cal2 Calendar
@@ -180,4 +120,157 @@ object DateUtils {
     fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
         return cal1[0] == cal2[0] && cal1[1] == cal2[1] && cal1[6] == cal2[6]
     }
+}
+
+/**
+ * convert string to date
+ * if string is blank or format is blank then return null
+ * if string cannot be parsed then return null
+ * else return date
+ */
+fun String.toDate(
+    format: String, locale: Locale = Locale.getDefault()
+): Date? {
+    if (this.isBlank() || format.isBlank()) return null
+    return try {
+        SimpleDateFormat(format, locale).parse(this)
+    } catch (e: Exception) {
+        null
+    }
+}
+
+/**
+ * convert string to time long milliseconds
+ * use function string to date
+ */
+fun String.toTimeLong(
+    format: String, locale: Locale = Locale.getDefault()
+): Long? = toDate(format, locale)?.time
+
+/**
+ * convert time long milliseconds to string with predefined format
+ * if format is blank return null
+ * if format is not java date time format then catch Exception and return null
+ * else return formatted string
+ */
+fun Long.toTimeString(
+    format: String, locale: Locale = Locale.getDefault()
+): String? {
+    if (format.isBlank()) return null
+    return try {
+        SimpleDateFormat(format, locale).format(Date(this))
+    } catch (e: Exception) {
+        null
+    }
+}
+
+/**
+ * change time string format from oldFormat to newFormat
+ * if string or oldFormat or newFormat is blank then return null
+ * if oldFormat/newFormat is illegal then catch exception and return null
+ * else return string
+ */
+fun String.changeTimeFormat(
+    oldFormat: String, newFormat: String, locale: Locale = Locale.getDefault()
+): String? {
+    if (this.isBlank() || oldFormat.isBlank() || newFormat.isBlank()) return null
+    return try {
+        val simpleDateFormat = SimpleDateFormat(oldFormat, locale)
+        val date = simpleDateFormat.parse(this)
+        simpleDateFormat.applyPattern(newFormat)
+        if (date != null) simpleDateFormat.format(date)
+        else null
+    } catch (e: Exception) {
+        null
+    }
+}
+
+/**
+ * convert date to time string
+ * if format is wrong or illegal then catch exception and return null
+ * else return string
+ */
+fun Date.toTimeString(format: String, locale: Locale = Locale.getDefault()): String? {
+    return if (format.isBlank()) null
+    else try {
+        SimpleDateFormat(format, locale).format(this)
+    } catch (e: Exception) {
+        null
+    }
+}
+
+/**
+ * get current date time
+ */
+fun getCurrentDateTime(): Date = Calendar.getInstance().time
+
+/**
+ * convert date to calendar
+ */
+fun Date.toCalendar(): Calendar {
+    return Calendar.getInstance().let {
+        it.time = this
+        it
+    }
+}
+
+/**
+ * get previous month of this date
+ */
+fun Date.getPreviousMonth(): Date {
+    return Calendar.getInstance().let {
+        it.time = this
+        it.add(Calendar.MONTH, -1)
+        it.time
+    }
+}
+
+/**
+ * get next month of this date
+ */
+fun Date.getNextMonth(): Date {
+    return Calendar.getInstance().let {
+        it.time = this
+        it.add(Calendar.MONTH, 1)
+        it.time
+    }
+}
+
+/**
+ * get previous day of this date
+ */
+fun Date.getPreviousDay(): Date {
+    return Calendar.getInstance().let {
+        it.time = this
+        it.add(Calendar.DAY_OF_MONTH, -1)
+        it.time
+    }
+}
+
+/**
+ * get next day of this date
+ */
+fun Date.getNextDay(): Date {
+    return Calendar.getInstance().let {
+        it.time = this
+        it.add(Calendar.DAY_OF_MONTH, 1)
+        it.time
+    }
+}
+
+fun Long.getGapTime(): String {
+    val hours = this / (1000 * 60 * 60)
+    val minutes = (this - hours * (1000 * 60 * 60)) / (1000 * 60)
+    val second = (this - hours * (1000 * 60 * 60) - minutes * (1000 * 60)) / 1000
+    var diffTime: String = if (minutes < 10) {
+        "$hours:0$minutes"
+    } else {
+        "$hours:$minutes"
+    }
+    diffTime = if (second < 10) {
+        "$diffTime:0$second"
+    } else {
+        "$diffTime:$second"
+    }
+    return diffTime
 }
