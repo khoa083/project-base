@@ -126,6 +126,7 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.hilt.android)
     implementation(libs.androidx.profileinstaller)
+    implementation(libs.androidx.swiperefreshlayout)
     "baselineProfile"(project(":baselineprofile"))
     ksp(libs.hilt.compiler)
     implementation(libs.bundles.roomDb)
