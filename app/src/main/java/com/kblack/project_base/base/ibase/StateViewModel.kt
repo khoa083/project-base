@@ -1,11 +1,9 @@
 package com.kblack.project_base.base.ibase
 
 import androidx.lifecycle.ViewModel
-import com.example.moviedb.data.remote.toBaseException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.net.ConnectException
-import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
