@@ -1,6 +1,6 @@
 [versions]
 agp = "8.10.1"
-kotlin = "2.1.20"
+kotlin = "2.1.21"
 androidFastscrollKt = "v1.0.8"
 
 splashscreen = "1.0.1"
@@ -18,7 +18,7 @@ dotsindicator = "5.1.0"
 room = "2.7.1"
 paging = "3.3.6"
 material3 = "1.13.0-alpha14"
-ksp = "2.1.10-1.0.31"
+ksp = "2.1.21-2.0.1"
 junit = "4.13.2"
 androidx-junit = "1.2.1"
 espresso = "3.6.1"
