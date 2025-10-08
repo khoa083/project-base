@@ -21,18 +21,8 @@ import java.sql.SQLException
  */
 abstract class BaseRepository(
     protected val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val cache: MutableMap<String, Any> = mutableMapOf()
+    private val cache: MutableMap<String, Any?> = ConcurrentHashMap(),
 ) {
-
-    sealed class Result<out T> {
-        data class Success<out T>(val data: T) : Result<T>()
-        sealed class Error(val exception: Throwable) : Result<Nothing>() {
-            class NetworkError(exception: Throwable) : Error(exception)
-            class DatabaseError(exception: Throwable) : Error(exception)
-            class UnknownError(exception: Throwable) : Error(exception)
-        }
-        object Loading : Result<Nothing>()
-    }
 
     /**
      * Executes a network call with caching and custom error handling.
@@ -46,38 +36,29 @@ abstract class BaseRepository(
         cacheKey: String? = null,
         onError: (Throwable) -> Unit = {},
         context: Context
-    ): Flow<Result<T>> = flow {
-        emit(Result.Loading)
+    ): Flow<DataResult<T>> = flow {
+        emit(DataResult.loading())
 
-        // Giả định có hàm kiểm tra kết nối mạng (cần triển khai riêng)
         if (!isNetworkAvailable(context)) {
             val error = IOException("No network connection")
             onError(error)
-            emit(Result.Error.NetworkError(error))
+            emit(DataResult.error("No network connection"))
             return@flow
         }
 
         try {
-            val result = withContext(ioDispatcher) {
-                cacheKey?.let { key ->
-                    cache[key]?.let { cachedData ->
-                        return@withContext cachedData as T
-                    }
-                }
-                val data = call()
-                cacheKey?.let { key -> cache[key] = data as Any }
+            val result = cacheKey?.let { key ->
+                @Suppress("UNCHECKED_CAST")
+                cache[key] as? T
+            } ?: run {
+                val data: T = call()
+                cacheKey?.let { key -> cache[key] = data }
                 data
             }
-            emit(Result.Success(result))
+            emit(DataResult.success(result))
         } catch (e: HttpException) {
             onError(e)
-            emit(Result.Error.NetworkError(e))
-        } catch (e: IOException) {
-            onError(e)
-            emit(Result.Error.NetworkError(e))
-        } catch (e: Exception) {
-            onError(e)
-            emit(Result.Error.UnknownError(e))
+            emit(DataResult.error("No network connection"))
         }
     }.flowOn(ioDispatcher)
 
@@ -86,15 +67,15 @@ abstract class BaseRepository(
      * @param call Suspend function representing the database operation.
      * @return Result with Success or Error state.
      */
-    protected suspend fun <T> executeLocalCall(call: suspend () -> T): Result<T> {
+    protected suspend fun <T> executeLocalCall(call: suspend () -> T): DataResult<T> {
         return try {
             withContext(ioDispatcher) {
-                Result.Success(call())
+                DataResult.success(call())
             }
         } catch (e: SQLException) {
-            Result.Error.DatabaseError(e)
+            DataResult.error("Database error")
         } catch (e: Exception) {
-            Result.Error.UnknownError(e)
+            DataResult.error("Unknown error")
         }
     }
 
@@ -103,9 +84,9 @@ abstract class BaseRepository(
      * @param flowCall Flow representing the local data source.
      * @return Flow emitting Result with Success or Error states.
      */
-    protected fun <T> wrapLocalFlow(flowCall: Flow<T>): Flow<Result<T>> {
+    protected fun <T> wrapLocalFlow(flowCall: Flow<T>): Flow<DataResult<T>> {
         return flowCall
-            .map { Result.Success(it) }
+            .map { DataResult.success(it) }
             .catch {}
             .flowOn(ioDispatcher)
     }
