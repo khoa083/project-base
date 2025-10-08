@@ -9,21 +9,30 @@ import androidx.databinding.ViewDataBinding
 abstract class BaseActivity<VB: ViewDataBinding, VM: BaseViewModel> : AppCompatActivity() {
     private var _binding: VB? = null
     protected val activityBinding get() = _binding!!
-    protected abstract val mViewModel: VM
-    abstract val layoutId: Int
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    abstract val viewModel: VM
+    abstract val layoutId: Int
+    abstract val idContainerView: Int
+
+    private fun setSystemBars() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(idContainerView)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         _binding = DataBindingUtil.setContentView(this, layoutId)
         activityBinding.lifecycleOwner = this
         setupView(activityBinding)
+        setSystemBars()
     }
 
     abstract fun setupView(activityBinding: VB)
 
     abstract fun showView(isShow: Boolean)
-
-    abstract fun setStatusBar()
 
     override fun onDestroy() {
         super.onDestroy()
