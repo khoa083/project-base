@@ -4,16 +4,11 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.android.hilt) apply false
-    alias(libs.plugins.android.ksp) apply false
-    alias(libs.plugins.android.navigationSafeArgs) apply false
-    alias(libs.plugins.android.test) apply false
-    alias(libs.plugins.baselineprofileProj) apply false
 }
 
 val versions = mapOf(
     "min_sdk" to 29,
-    "target_sdk" to 35,
+    "target_sdk" to 36,
 
     )
 

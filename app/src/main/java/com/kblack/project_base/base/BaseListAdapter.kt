@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kblack.project_base.BR
 import java.util.concurrent.Executors
 
 
@@ -73,6 +72,37 @@ abstract class BaseListAdapter<T : Any, VB : ViewDataBinding>(
         holder.binding.executePendingBindings()
     }
 
+}
+
+/**
+ * paging 3 adapter
+ */
+abstract class BasePagingAdapter<Item : Any, ViewBinding : ViewDataBinding>(
+    callBack: DiffUtil.ItemCallback<Item>
+) : PagingDataAdapter<Item, BaseViewHolder<ViewBinding>>(callBack),
+    BaseRecyclerAdapter<Item, ViewBinding> {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewBinding> {
+        return BaseViewHolder(DataBindingUtil.inflate<ViewBinding>(
+            LayoutInflater.from(parent.context),
+            getLayoutRes(viewType),
+            parent, false
+        ).apply {
+            bindFirstTime(this)
+        })
+    }
+
+    abstract fun getBindingVariablePagingId(): Int
+
+    override fun onBindViewHolder(holder: BaseViewHolder<ViewBinding>, position: Int) {
+        // adapter uses getItem() to detect loading
+        val item: Item? = getItem(position)
+        holder.binding.setVariable(getBindingVariablePagingId(), item)
+        if (item != null) {
+            bindView(holder.binding, item, position)
+        }
+        holder.binding.executePendingBindings()
+    }
 }
 
 

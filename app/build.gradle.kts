@@ -1,19 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.baselineprofile)
-//    alias(libs.plugins.kapt)
     id("kotlin-kapt")
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.parcelize)
-    alias(libs.plugins.navigation)
 }
 
 android {
 
     namespace = "com.kblack.project_base"
-    compileSdk = ((rootProject.extra["versions"] as Map<*, *>)["target_sdk"] as Int?)!!
+//     = ((rootProject.extra["versions"] as Map<*, *
+    compileSdk = 36
 
     signingConfigs {
 
@@ -45,10 +40,6 @@ android {
 
     lint {
         lintConfig = file("lint.xml")
-    }
-
-    baselineProfile {
-        dexLayoutOptimization = true
     }
 
     defaultConfig {
@@ -100,14 +91,16 @@ android {
 //        }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_23
-        targetCompatibility = JavaVersion.VERSION_23
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "23"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
     buildFeatures {
-        viewBinding = true
+//        viewBinding = true
         dataBinding = true
     }
     defaultConfig{
@@ -119,31 +112,25 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.androidxCoreComponents)
+    // Implementation dependencies
+    implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.navigation)
-    implementation(libs.bundles.lifecycleAware)
+
+    // UI dependencies
+    implementation(libs.material)
+
+    // Network dependencies
+    implementation(libs.bundles.retrofit2)
     implementation(libs.bundles.okhttp)
     implementation(platform(libs.okhttp.bom))
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.profileinstaller)
+
+    // swipe refresh
     implementation(libs.androidx.swiperefreshlayout)
-    "baselineProfile"(project(":baselineprofile"))
-    ksp(libs.hilt.compiler)
-    implementation(libs.bundles.roomDb)
-    ksp(libs.room.compiler)
-    implementation(libs.bundles.retrofit2)
-    implementation(libs.material3)
-    implementation(libs.kotlinx.coroutines)
-    implementation(libs.dotsindicator)
-    implementation(libs.paging)
-    implementation(libs.shimmer)
-    implementation(libs.glide)
-    implementation(libs.junit)
-    implementation(libs.androidx.junit)
-    implementation(libs.espresso.core)
-    debugImplementation(libs.leak.canary)
+
+    // Paging
+    implementation(libs.androidx.paging)
 }
 
-kapt {
-    correctErrorTypes = true
-}
+//kapt {
+//    correctErrorTypes = true
+//}
