@@ -40,6 +40,15 @@ abstract class BaseListAdapter<T : Any, VB : ViewDataBinding>(
         .build()
 ), BaseRecyclerAdapter<T, VB> {
 
+    abstract fun getBindingVariableId(): Int
+
+    /**
+     * get layout res based on view type
+     * override fun getBindingVariableId(): Int {
+     *         return BR.item // Trả về ID biến từ layout XML
+     *     }
+     */
+
     override fun submitList(list: List<T>?) {
         super.submitList(ArrayList<T>(list ?: listOf()))
     }
@@ -57,42 +66,13 @@ abstract class BaseListAdapter<T : Any, VB : ViewDataBinding>(
 
     override fun onBindViewHolder(holder: BaseViewHolder<VB>, position: Int) {
         val item: T? = getItem(position)
-        holder.binding.setVariable(BR.item, item)
+        holder.binding.setVariable(getBindingVariableId(), item)
         if (item != null) {
             bindView(holder.binding, item, position)
         }
         holder.binding.executePendingBindings()
     }
 
-}
-
-/**
- * paging adapter
- */
-abstract class BasePagingAdapter<T : Any, VB : ViewDataBinding>(
-    callBack: DiffUtil.ItemCallback<T>
-) : PagingDataAdapter<T, BaseViewHolder<VB>>(callBack),
-    BaseRecyclerAdapter<T, VB> {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<VB> {
-        return BaseViewHolder(DataBindingUtil.inflate<VB>(
-            LayoutInflater.from(parent.context),
-            getLayoutRes(viewType),
-            parent, false
-        ).apply {
-            bindFirstTime(this)
-        })
-    }
-
-    override fun onBindViewHolder(holder: BaseViewHolder<VB>, position: Int) {
-        // adapter uses getItem() to detect loading
-        val item: T? = getItem(position)
-        holder.binding.setVariable(BR.item, item)
-        if (item != null) {
-            bindView(holder.binding, item, position)
-        }
-        holder.binding.executePendingBindings()
-    }
 }
 
 
