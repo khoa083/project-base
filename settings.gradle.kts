@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "project-base"
 include(":app")
-include(":baselineprofile")
+//include(":baselineprofile")

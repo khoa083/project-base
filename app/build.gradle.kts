@@ -61,7 +61,7 @@ android {
             "MY_COMMIT_NAME",
             "\"${rootProject.extra["commitMessage"] as String}\""
         )
-        setProperty("archivesBaseName", "ToeicK-$versionName${versionNameSuffix ?: ""}")
+//        setProperty("archivesBaseName", "ToeicK-$versionName${versionNameSuffix ?: ""}")
         vectorDrawables {
             useSupportLibrary = true
         }
