@@ -7,8 +7,8 @@ plugins {
 android {
 
     namespace = "com.kblack.project_base"
-//     = ((rootProject.extra["versions"] as Map<*, *
-    compileSdk = 36
+
+    compileSdk = ((rootProject.extra["configSDK"] as Map<*, *>)["target_sdk"] as Int?)!!
 
     signingConfigs {
 
@@ -44,8 +44,9 @@ android {
 
     defaultConfig {
         applicationId = "com.kblack.project_base"
-        minSdk = ((rootProject.extra["versions"] as Map<*, *>)["min_sdk"] as Int?)!!
-        targetSdk = ((rootProject.extra["versions"] as Map<*, *>)["target_sdk"] as Int?)!!
+        minSdk = ((rootProject.extra["configSDK"] as Map<*, *>)["min_sdk"] as Int?)!!
+        targetSdk = ((rootProject.extra["configSDK"] as Map<*, *>)["target_sdk"] as Int?)!!
+        // Trên store lấy version dựa theo 2 phần này
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"] as String
 

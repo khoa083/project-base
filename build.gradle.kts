@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
-val versions = mapOf(
+val configSDK = mapOf(
     "min_sdk" to 29,
     "target_sdk" to 36,
 
@@ -41,7 +41,7 @@ fun readProperties(propertiesFile: File) = Properties().apply {
     }
 }
 
-extra["versions"] = versions
+extra["configSDK"] = configSDK
 extra["versionCode"] = versionCode
 extra["versionName"] = versionName
 extra["myVersionName"] = myVersionName
