@@ -14,10 +14,6 @@ android {
 
     }
 
-//    androidResources {
-//        generateLocaleConfig = true
-//    }
-
     buildFeatures {
         buildConfig = true
     }
@@ -83,13 +79,6 @@ android {
             applicationIdSuffix = ".debug"
             versionNameSuffix = rootProject.extra["myVersionName"] as String
         }
-//        create("staging") {
-//            applicationIdSuffix = ".staging"
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
