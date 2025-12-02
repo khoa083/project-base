@@ -2,10 +2,10 @@
 agp = "8.13.0"
 kotlin = "2.2.21"
 coreKtx = "1.17.0"
-navigationKtx = "2.9.5"
+navigationKtx = "2.9.6"
 material = "1.14.0-alpha06"
 retrofit2 = "3.0.0"
-okhttp = "5.2.1"
+okhttp = "5.3.2"
 swiperefreshlayout = "1.1.0"
 paging = "3.3.6"
 
