@@ -62,7 +62,7 @@ graph TD
 
 This project uses a robust Base Architecture. Below are standard implementation guides for the core base classes.
 
-### 1. BaseFragment
+### BaseFragment
 Used for all Fragments to standardize DataBinding and ViewModel initialization.
 
 ```kotlin
@@ -90,92 +90,3 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 }
 ```
 
-### 2. BaseViewModel
-Handles `UiState`, loading states, and exception handling.
-
-```kotlin
-class HomeViewModel : BaseViewModel() {
-
-    fun fetchData() {
-        viewModelScope.launch {
-            // 1. Show Loading
-            showLoading()
-            
-            try {
-                // Do async work...
-                
-                // 2. Hide Loading on success
-                hideLoading()
-            } catch (e: Exception) {
-                // 3. Auto-handle error (updates uiState.errorType)
-                onError(e)
-            }
-        }
-    }
-}
-```
-
-### 3. BaseListAdapter
-Simplifies RecyclerView Adapters with DataBinding and DiffUtil.
-
-```kotlin
-class UserAdapter : BaseListAdapter<User, ItemUserBinding>(UserDiffCallback()) {
-
-    // 1. Provide Layout Resource
-    override fun getLayoutRes(viewType: Int) = R.layout.item_user
-
-    // 2. Provide Binding Variable ID (from XML <data>)
-    override fun getBindingVariableId() = BR.user
-
-    // 3. Optional: Custom Logic
-    override fun bindView(binding: ItemUserBinding, item: User, position: Int) {
-        binding.root.setOnClickListener { /* handle click */ }
-    }
-}
-
-// Standard DiffUtil
-class UserDiffCallback : DiffUtil.ItemCallback<User>() {
-    override fun areItemsTheSame(oldItem: User, newItem: User) = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: User, newItem: User) = oldItem == newItem
-}
-```
-
-### 4. BasePaging (Pagination)
-Implements Paging 3 with `BasePagingSource`, `BasePagingViewModel`, and `BasePagingFragment`.
-
-**Step 1: Create Paging Source**
-```kotlin
-class UserPagingSource(val api: ApiService) : BasePagingSource<User>() {
-    override suspend fun loadData(params: LoadParams<Int>): List<User>? {
-        val page = params.key ?: getFirstPage()
-        val response = api.getUsers(page = page, size = params.loadSize)
-        return response.data
-    }
-}
-```
-
-**Step 2: Create Paging ViewModel**
-```kotlin
-class UserViewModel(private val api: ApiService) : BasePagingViewModel<User>() {
-    // Define page size
-    override val pageSize = 20
-
-    override fun createPagingSource(): BasePagingSource<User> {
-        return UserPagingSource(api)
-    }
-}
-```
-
-**Step 3: Create Paging Fragment**
-```kotlin
-class UserFragment : BasePagingFragment<FragmentUserBinding, UserViewModel, User>() {
-    
-    override val layoutId = R.layout.fragment_user
-    override val pagingAdapter = UserPagingAdapter() // Extends BasePagingAdapter
-    
-    // Required references for BasePagingFragment to manage states
-    override val swipeRefreshLayout: SwipeRefreshLayout get() = fragmentBinding.swipeRefresh
-    override val recyclerView: RecyclerView get() = fragmentBinding.recyclerView
-    override val pagingViewModel: UserViewModel by viewModels() // Or injection
-}
-```
