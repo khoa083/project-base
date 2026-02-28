@@ -45,19 +45,6 @@ graph TD
 *   **Android Studio** (Latest Stable version recommended)
 *   **JDK 17** must be installed and configured as the Gradle JDK.
 
-### Installation
-1.  **Clone the repository**:
-    ```bash
-    git clone <repository-url>
-    ```
-2.  **Open in Android Studio**:
-    *   Launch Android Studio -> Open -> Select the cloned project folder.
-3.  **Sync Gradle**:
-    *   Wait for the project to sync dependencies. ensure your internet connection is active.
-4.  **Run the App**:
-    *   Select a connected device or emulator (API 29+).
-    *   Click the **Run** button (Green Play Icon).
-
 ## 📖 Usage Examples
 
 This project uses a robust Base Architecture. Below are standard implementation guides for the core base classes.
@@ -89,4 +76,5 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 }
 ```
+
 
