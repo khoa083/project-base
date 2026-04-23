@@ -12,33 +12,6 @@ A robust Android project template utilizing modern Android development practices
 *   **Build System**: Gradle Kotlin DSL (`.kts`)
 *   **Architecture**: MVVM (Model-View-ViewModel)
 
-### 📦 Key Libraries
-*   **Android Jetpack**:
-    *   **Navigation Component**: For handling in-app navigation.
-    *   **Paging 3**: For loading and displaying pages of data.
-    *   **DataBinding**: For binding UI components layouts to data sources.
-*   **Networking**:
-    *   **Retrofit 2**: type-safe HTTP client.
-    *   **OkHttp**: HTTP client.
-*   **UI Components**:
-    *   **Material Design**: For UI styling and components.
-    *   **SwipeRefreshLayout**: For pull-to-refresh functionality.
-
-## 👤 Author
-
-**khoa083**
-
-## 🔄 Activity Flow
-
-The application follows a standard single-activity architecture where fragments (or other composables/views) are managed within the main activity container.
-
-```mermaid
-graph TD
-    A[MyApp] --> B[MainActivity]
-    B --> C{Navigation Host}
-    C --> D[Feature Screens]
-```
-
 ## 🚀 Deployment & Setup
 
 ### Prerequisites
