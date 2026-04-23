@@ -2,7 +2,7 @@
 
 A robust Android project template utilizing modern Android development practices and architecture.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 *   **Language**: [Kotlin](https://kotlinlang.org/)
 *   **Minimum SDK**: 29 (Android 10)
@@ -12,13 +12,13 @@ A robust Android project template utilizing modern Android development practices
 *   **Build System**: Gradle Kotlin DSL (`.kts`)
 *   **Architecture**: MVVM (Model-View-ViewModel)
 
-## 🚀 Deployment & Setup
+## Deployment & Setup
 
 ### Prerequisites
 *   **Android Studio** (Latest Stable version recommended)
 *   **JDK 17** must be installed and configured as the Gradle JDK.
 
-## 📖 Usage Examples
+## Usage Examples
 
 This project uses a robust Base Architecture. Below are standard implementation guides for the core base classes.
 
